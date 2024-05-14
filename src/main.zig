@@ -15,15 +15,26 @@ export var multiboot align(4) linksection(".multiboot") = MultiBoot{
     .checksum = -(MAGIC + FLAGS),
 };
 
-// export var stack: [16 * 1024]u8 align(16) linksection(".bss") = undefined;
+export var stack: [16 * 1024]u8 align(16) linksection(".stack.bss") = undefined;
 
 export fn _start() callconv(.C) noreturn {
-    @call(.auto, main, .{});
+    // init stack
+    asm volatile (
+        \\ mov %[stack_ptr], %[sp]
+        :
+        : [stack_ptr] "{eax}" (&stack),
+          [sp] "{sp}" (0),
+    );
+
+    kmain();
     while (true)
         asm volatile ("hlt");
 }
 
-fn main() void {
+fn kmain() void {
+    // for (&stack) |*item| {
+    //     item.* = 'A';
+    // }
     const vga_buffer: *[128]u16 = @ptrFromInt(0xB8000);
     inline for ("Hello, world\n", 0..) |byte, i|
         vga_buffer[i] = 0xF0 << 8 | @as(u16, byte);

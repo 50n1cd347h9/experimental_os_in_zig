@@ -1,4 +1,5 @@
 const std = @import("std");
+const Build = std.Build;
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{
@@ -9,10 +10,8 @@ pub fn build(b: *std.Build) void {
         .name = "os.elf",
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
-        // .release_mode = b.ReleaseMode.fast,
     });
-
-    os.setLinkerScriptPath(.{ .path = "linker.ld" });
+    os.setLinkerScriptPath(.{ .path = "src/linker.ld" });
     b.installArtifact(os);
 
     const run_cmd = b.addSystemCommand(&.{
@@ -22,8 +21,8 @@ pub fn build(b: *std.Build) void {
         "-display",
         "gtk,zoom-to-fit=on",
     });
-    run_cmd.step.dependOn(&os.step);
-
     const run_step = b.step("run", "Run the os");
+
+    run_cmd.step.dependOn(&os.step);
     run_step.dependOn(&run_cmd.step);
 }
