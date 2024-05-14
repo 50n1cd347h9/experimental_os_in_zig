@@ -22,7 +22,7 @@ export fn _start() callconv(.C) noreturn {
     asm volatile (
         \\ mov %[stack_ptr], %[sp]
         :
-        : [stack_ptr] "{eax}" (&stack),
+        : [stack_ptr] "{eax}" (&stack[stack.len - 1]),
           [sp] "{sp}" (0),
     );
 
