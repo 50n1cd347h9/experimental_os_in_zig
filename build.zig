@@ -12,14 +12,15 @@ pub fn build(b: *std.Build) void {
         .target = target,
     });
     os.setLinkerScriptPath(.{ .path = "src/linker.ld" });
+    os.addAssemblyFile(Build.LazyPath{ .path = "src/boot.S" });
     b.installArtifact(os);
 
     const run_cmd = b.addSystemCommand(&.{
         "qemu-system-i386",
         "-kernel",
         "zig-out/bin/os.elf",
-        "-display",
-        "gtk,zoom-to-fit=on",
+        // "-display",
+        // "gtk,zoom-to-fit=on",
     });
     const run_step = b.step("run", "Run the os");
 

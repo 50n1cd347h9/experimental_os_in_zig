@@ -1,3 +1,5 @@
+const std = @import("std");
+
 const ALIGN = 1 << 0;
 const MEMINFO = 1 << 1;
 const MAGIC = 0x1badb002;
@@ -15,27 +17,16 @@ export var multiboot align(4) linksection(".multiboot") = MultiBoot{
     .checksum = -(MAGIC + FLAGS),
 };
 
-export var stack: [16 * 1024]u8 align(16) linksection(".stack.bss") = undefined;
+// export var stack: [16 * 1024]u8 align(16) linksection(".stack.bss") = undefined;
 
-export fn _start() callconv(.C) noreturn {
-    // init stack
-    asm volatile (
-        \\ mov %[stack_ptr], %[sp]
-        :
-        : [stack_ptr] "{eax}" (&stack[stack.len - 1]),
-          [sp] "{sp}" (0),
-    );
+fn printTest(bytes: []const u8) usize {
+    const vga_buffer: *[128]u16 = @ptrFromInt(0xB8000);
+    for (bytes, 0..) |byte, i|
+        vga_buffer[i] = 0xF0 << 8 | @as(u16, byte);
 
-    kmain();
-    while (true)
-        asm volatile ("hlt");
+    return bytes.len;
 }
 
-fn kmain() void {
-    // for (&stack) |*item| {
-    //     item.* = 'A';
-    // }
-    const vga_buffer: *[128]u16 = @ptrFromInt(0xB8000);
-    inline for ("Hello, world\n", 0..) |byte, i|
-        vga_buffer[i] = 0xF0 << 8 | @as(u16, byte);
+export fn kmain() void {
+    _ = printTest("Test Test AAAA");
 }
