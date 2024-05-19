@@ -19,6 +19,10 @@ pub fn build(b: *std.Build) void {
         "qemu-system-i386",
         "-kernel",
         "zig-out/bin/os.elf",
+        "-monitor",
+        "stdio",
+        "-machine",
+        "q35",
         // "-display",
         // "gtk,zoom-to-fit=on",
     });

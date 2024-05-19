@@ -20,11 +20,16 @@ export var multiboot align(4) linksection(".multiboot") = MultiBoot{
 // export var stack: [16 * 1024]u8 align(16) linksection(".stack.bss") = undefined;
 
 fn printTest(bytes: []const u8) usize {
-    const vga_buffer: *[128]u16 = @ptrFromInt(0xB8000);
+    var vga_buffer: *[128]u16 = @ptrFromInt(0xB8000);
     for (bytes, 0..) |byte, i|
         vga_buffer[i] = 0xF0 << 8 | @as(u16, byte);
 
     return bytes.len;
+}
+
+export fn trap() align(4) callconv(.C) noreturn {
+    while (true)
+        asm volatile ("hlt");
 }
 
 export fn kmain() void {

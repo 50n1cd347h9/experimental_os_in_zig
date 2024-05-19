@@ -1,32 +1,31 @@
 MEMORY
 {
-	RAM (rwx): ORIGIN = 0x20000000, LENGTH = 12K /* executable & readable & writable */
-    ROM (rx): ORIGIN = 0x08000000, LENGTH = 64K
+    RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 64K 
+    ROM (rx) : ORIGIN = 0x00100000, LENGTH = 512K
 }
-
 
 ENTRY(_start)
 
 SECTIONS {
-	/* . = 1M; */
-	.text : ALIGN(4K) {
-		KEEP(*(.multiboot))
-		*(.text)
-	} > ROM
-
-	 .rodata : ALIGN(4K) {
-    	*(.rodata)
+    .text : ALIGN(4) {
+        KEEP(*(.multiboot))
+        *(.text .text.*)
+        *(.text.init)
     } > ROM
 
-    .data : ALIGN(4K) {
+    .rodata : ALIGN(4) {
+        *(.rodata)
+    } > ROM
+
+    .data : ALIGN(4) {
         *(.data)
     } > RAM
 
-    .bss : ALIGN(4K) {
+    .bss : ALIGN(4) {
         *(COMMON)
         *(.bss)
-		PROVIDE(_bss_end = .);
+        PROVIDE(_bss_end = .);
     } > RAM
 
-	PROVIDE(_stack = _bss_end + 0x80000);
+    PROVIDE(_stack = ORIGIN(RAM) + LENGTH(RAM));
 }
