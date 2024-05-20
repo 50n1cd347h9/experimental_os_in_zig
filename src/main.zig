@@ -11,7 +11,7 @@ const MultiBoot = extern struct {
     checksum: i32,
 };
 
-export var multiboot align(4) linksection(".multiboot") = MultiBoot{
+export const multiboot align(4) linksection(".multiboot") = MultiBoot{
     .magic = MAGIC,
     .flags = FLAGS,
     .checksum = -(MAGIC + FLAGS),
@@ -33,6 +33,6 @@ comptime {
 
 export fn kmain() void {
     const vga_buffer: *[128]u16 = @ptrFromInt(0xB8000);
-    inline for ("Hello, world\r aiueoq", 0..) |byte, i|
+    inline for ("fuck linker script", 0..) |byte, i|
         vga_buffer[i] = 0xF0 << 8 | @as(u16, byte);
 }
