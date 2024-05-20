@@ -17,7 +17,6 @@ SECTIONS {
 
     .bss : ALIGN(4K) {
         *(COMMON)
-        *(.bss)
-		stack_top = .;
+        *(.bss .bss.*)
     }
 }

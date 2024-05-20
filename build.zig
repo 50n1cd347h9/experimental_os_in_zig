@@ -10,6 +10,7 @@ pub fn build(b: *std.Build) void {
         .name = "os.elf",
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
+        .linkage = std.builtin.LinkMode.static,
     });
     os.setLinkerScriptPath(.{ .path = "src/linker.ld" });
     b.installArtifact(os);
@@ -18,8 +19,10 @@ pub fn build(b: *std.Build) void {
         "qemu-system-i386",
         "-kernel",
         "zig-out/bin/os.elf",
-        "-display",
-        "gtk,zoom-to-fit=on",
+        "-monitor",
+        "stdio",
+        // "-display",
+        // "gtk,zoom-to-fit=on",
     });
     const run_step = b.step("run", "Run the os");
 
