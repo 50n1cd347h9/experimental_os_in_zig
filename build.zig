@@ -21,6 +21,8 @@ pub fn build(b: *std.Build) void {
         "zig-out/bin/os.elf",
         "-monitor",
         "stdio",
+        "-s",
+        "-S",
         // "-display",
         // "gtk,zoom-to-fit=on",
     });

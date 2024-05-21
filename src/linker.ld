@@ -12,6 +12,7 @@ SECTIONS {
     }
 
     .data : ALIGN(4K) {
+		. = ALIGN(16);
         *(.data)
     } 
 

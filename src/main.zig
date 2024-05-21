@@ -1,3 +1,6 @@
+const std = @import("std");
+const console = @import("console.zig");
+
 const ALIGN = 1 << 0;
 const MEMINFO = 1 << 1;
 const MAGIC = 0x1badb002;
@@ -31,8 +34,11 @@ comptime {
     );
 }
 
-export fn kmain() void {
-    const vga_buffer: *[128]u16 = @ptrFromInt(0xB8000);
-    inline for ("fuck linker script", 0..) |byte, i|
-        vga_buffer[i] = 0xF0 << 8 | @as(u16, byte);
+export fn kmain() callconv(.C) void {
+    // var x: u32 = 1;
+    // const y: u32 = 3;
+    // x = 2;
+
+    // _ = printf("hogehoge{}", .{ x, x * 2, y });
+    console.puts("sssss");
 }
